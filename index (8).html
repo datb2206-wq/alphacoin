@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)file:///E:/alphacoin_website_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlphaCoin — Where Trading Bots Earn Alpha</title>
+<link href="./web alphacoin_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F0C030;
+    --gold-dim: #C9A84C;
+    --gold-dark: #8B6400;
+    --green: #00E5A0;
+    --green-dim: #00B878;
+    --dark: #04040E;
+    --dark2: #080818;
+    --dark3: #0C0C22;
+    --text: #E0D8C0;
+    --muted: #6E6A80;
+    --border: rgba(201,168,76,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ── CANVAS BACKGROUND ── */
+  #bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── SCANLINES ── */
+  .scanlines {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 10; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 0;
+    background: rgba(4,4,14,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900; font-size: 1.2rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .nav-logo-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); }
+
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem; color: var(--muted);
+    text-decoration: none; letter-spacing: 2px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem; letter-spacing: 2px;
+    padding: 10px 22px;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+    text-decoration: none;
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .nav-cta:hover { background: rgba(201,168,76,0.14); border-color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 0 80px;
+    position: relative; z-index: 10;
+  }
+
+  .hero-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center;
+  }
+
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: var(--green);
+    letter-spacing: 5px; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--green); opacity: 0.6; }
+
+  .hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900; line-height: 0.9;
+    margin-bottom: 20px;
+  }
+  .hero-title .t1 { font-size: clamp(3.5rem, 7vw, 5.5rem); display: block; color: var(--gold); text-shadow: 0 0 40px rgba(240,192,48,0.4), 0 0 80px rgba(240,192,48,0.1); }
+  .hero-title .t2 { font-size: clamp(3.5rem, 7vw, 5.5rem); display: block; color: rgba(220,210,185,0.65); }
+
+  .hero-tagline {
+    font-family: 'DM Sans', sans-serif; font-weight: 300; font-style: italic;
+    font-size: 1.25rem; color: rgba(220,210,185,0.45);
+    letter-spacing: 1.5px; margin-bottom: 32px;
+  }
+
+  .hero-desc {
+    font-size: 1rem; line-height: 1.75;
+    color: rgba(220,210,185,0.55); margin-bottom: 36px;
+    max-width: 460px;
+  }
+
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem; letter-spacing: 2px;
+    padding: 14px 30px;
+    background: var(--gold);
+    color: #0A0800;
+    text-decoration: none; font-weight: 700;
+    transition: all 0.2s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+  .btn-primary:hover { background: #FFD040; box-shadow: 0 0 30px rgba(240,192,48,0.4); }
+
+  .btn-secondary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem; letter-spacing: 2px;
+    padding: 13px 28px;
+    border: 1px solid var(--border);
+    color: var(--muted); background: transparent;
+    text-decoration: none;
+    transition: all 0.2s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+  .btn-secondary:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* Hero coin */
+  .hero-coin-wrap {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .coin-orbit {
+    position: relative; width: 380px; height: 380px;
+  }
+
+  .orbit-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .orbit-ring-2 {
+    position: absolute; inset: 28px; border-radius: 50%;
+    border: 1px dashed rgba(201,168,76,0.08);
+  }
+
+  .orbit-dot {
+    position: absolute; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--gold);
+    top: -5px; left: 50%; transform: translateX(-50%);
+    box-shadow: 0 0 14px var(--gold), 0 0 28px rgba(240,192,48,0.4);
+    animation: orbitSpin 12s linear infinite;
+    transform-origin: 5px calc(190px + 5px);
+  }
+
+  .orbit-dot-green {
+    position: absolute; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--green);
+    top: -3.5px; left: 50%; transform: translateX(-50%);
+    box-shadow: 0 0 10px var(--green);
+    animation: orbitSpin 18s linear infinite reverse;
+    transform-origin: 3.5px calc(162px + 3.5px);
+    margin-left: -28px; margin-top: 28px;
+  }
+
+  @keyframes orbitSpin { to { transform: translateX(-50%) rotate(360deg); } }
+
+  .coin-svg-wrap {
+    position: absolute; inset: 50px;
+    animation: coinFloat 7s ease-in-out infinite;
+  }
+
+  @keyframes coinFloat {
+    0%,100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-16px) rotate(1deg); }
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    position: relative; z-index: 10;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+    background: rgba(8,8,24,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .stats-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .stat {
+    text-align: center; padding: 0 20px;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: 'Orbitron', sans-serif; font-weight: 700;
+    font-size: 1.6rem; color: var(--gold);
+    letter-spacing: -1px; margin-bottom: 4px;
+  }
+  .stat-val.green { color: var(--green); }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; color: var(--muted);
+    letter-spacing: 3px; text-transform: uppercase;
+  }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 10; padding: 100px 0; }
+
+  .section-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: var(--green);
+    letter-spacing: 5px; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-tag::before { content: '//'; color: var(--gold-dim); }
+
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--text); letter-spacing: -1px; margin-bottom: 16px;
+    line-height: 1.1;
+  }
+  .section-title span { color: var(--gold); }
+
+  .section-sub {
+    font-size: 1rem; color: var(--muted); line-height: 1.7;
+    max-width: 560px; margin-bottom: 56px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .step {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .step:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-4px); }
+
+  .step-num {
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: 3rem; color: rgba(201,168,76,0.08);
+    position: absolute; top: 16px; right: 20px;
+    line-height: 1;
+  }
+
+  .step-icon {
+    font-size: 2rem; margin-bottom: 16px;
+    filter: drop-shadow(0 0 8px rgba(240,192,48,0.5));
+  }
+
+  .step-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 700;
+    font-size: 0.9rem; color: var(--gold);
+    letter-spacing: 1px; margin-bottom: 10px;
+  }
+
+  .step-desc {
+    font-size: 0.9rem; color: var(--muted); line-height: 1.65;
+  }
+
+  .step-line {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .step:hover .step-line { opacity: 1; }
+
+  /* ── TOKENOMICS ── */
+  .tokenomics-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px; align-items: start;
+  }
+
+  .token-info { display: flex; flex-direction: column; gap: 12px; }
+
+  .token-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold-dark);
+    transition: border-left-color 0.2s;
+  }
+  .token-row:hover { border-left-color: var(--gold); }
+
+  .token-key {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem; color: var(--muted); letter-spacing: 2px;
+  }
+
+  .token-val {
+    font-family: 'Orbitron', sans-serif; font-weight: 700;
+    font-size: 0.9rem; color: var(--gold);
+  }
+
+  /* Allocation bars */
+  .alloc { display: flex; flex-direction: column; gap: 14px; }
+
+  .alloc-item { }
+
+  .alloc-header {
+    display: flex; justify-content: space-between; margin-bottom: 6px;
+  }
+
+  .alloc-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: var(--text); letter-spacing: 1px;
+  }
+
+  .alloc-pct {
+    font-family: 'Orbitron', monospace; font-weight: 700;
+    font-size: 0.78rem; color: var(--gold);
+  }
+
+  .alloc-bar {
+    height: 6px; background: rgba(255,255,255,0.05); border-radius: 0;
+    overflow: hidden;
+  }
+
+  .alloc-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 0;
+    transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .alloc-fill.green { background: linear-gradient(90deg, #008050, var(--green)); }
+
+  /* ── ROADMAP ── */
+  .roadmap { display: flex; flex-direction: column; gap: 0; position: relative; }
+
+  .roadmap::before {
+    content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold-dark) 10%, var(--gold-dark) 90%, transparent);
+  }
+
+  .road-item {
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 24px; padding: 28px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.06);
+  }
+
+  .road-dot-wrap {
+    display: flex; flex-direction: column; align-items: center; padding-top: 4px;
+  }
+
+  .road-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--dark3);
+    border: 2px solid var(--gold-dim);
+    position: relative; z-index: 2; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .road-dot.active { background: var(--gold); box-shadow: 0 0 14px var(--gold); }
+  .road-dot.done { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px var(--green); }
+
+  .road-phase {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; color: var(--gold-dim);
+    letter-spacing: 3px; margin-bottom: 6px;
+  }
+
+  .road-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 700;
+    font-size: 1rem; color: var(--text); margin-bottom: 8px;
+  }
+
+  .road-items { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .road-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; padding: 4px 12px;
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--muted); letter-spacing: 1px;
+  }
+  .road-tag.done { border-color: rgba(0,229,160,0.3); color: var(--green); }
+  .road-tag.active { border-color: rgba(240,192,48,0.4); color: var(--gold); }
+
+  /* ── FAIR LAUNCH ── */
+  .launch-box {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 56px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .launch-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+
+  .launch-box::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+  }
+
+  .launch-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: 2.2rem; color: var(--gold); margin-bottom: 14px;
+    position: relative; z-index: 2;
+    text-shadow: 0 0 30px rgba(240,192,48,0.3);
+  }
+
+  .launch-sub {
+    font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+    max-width: 560px; margin: 0 auto 36px;
+    position: relative; z-index: 2;
+  }
+
+  .launch-points {
+    display: flex; justify-content: center; gap: 36px;
+    margin-bottom: 40px; flex-wrap: wrap;
+    position: relative; z-index: 2;
+  }
+
+  .launch-point {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem; color: var(--text); letter-spacing: 1px;
+  }
+
+  .launch-point::before {
+    content: '✓'; color: var(--green); font-size: 0.9rem;
+    filter: drop-shadow(0 0 6px var(--green));
+  }
+
+  .launch-btn {
+    position: relative; z-index: 2;
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif; font-weight: 700;
+    font-size: 0.9rem; letter-spacing: 3px;
+    padding: 16px 48px;
+    background: var(--gold);
+    color: #080600;
+    text-decoration: none;
+    transition: all 0.2s;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  }
+  .launch-btn:hover { background: #FFD040; box-shadow: 0 0 40px rgba(240,192,48,0.5); }
+
+  /* ── COMMUNITY ── */
+  .community-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .comm-card {
+    background: var(--dark3); border: 1px solid var(--border);
+    padding: 28px 32px;
+    display: flex; align-items: center; gap: 20px;
+    text-decoration: none; transition: all 0.25s;
+  }
+  .comm-card:hover { border-color: rgba(201,168,76,0.4); transform: translateX(4px); }
+
+  .comm-icon { font-size: 2rem; flex-shrink: 0; }
+
+  .comm-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 700;
+    font-size: 0.9rem; color: var(--text); margin-bottom: 4px;
+  }
+
+  .comm-desc {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: var(--muted); letter-spacing: 1px;
+  }
+
+  .comm-arrow {
+    margin-left: auto; color: var(--gold-dim); font-size: 1.2rem;
+    transition: transform 0.2s;
+  }
+  .comm-card:hover .comm-arrow { transform: translateX(4px); color: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: 1.1rem; color: var(--gold); letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: var(--muted); letter-spacing: 2px;
+  }
+
+  /* ── DIVIDER ── */
+  .gold-divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dark) 30%, var(--gold-dim) 50%, var(--gold-dark) 70%, transparent);
+    margin: 0;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { opacity: 0; animation: fadeUp 0.7s ease forwards; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-coin-wrap { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .tokenomics-grid { grid-template-columns: 1fr; }
+    .stats-inner { grid-template-columns: repeat(2,1fr); }
+    .community-grid { grid-template-columns: 1fr; }
+    .launch-box { padding: 36px 24px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas" width="1272" height="596"></canvas>
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="file:///E:/alphacoin_website_2.html#" class="nav-logo">
+      <div class="nav-logo-dot"></div>
+      ALPHACOIN
+    </a>
+    <div class="nav-links">
+      <a href="file:///E:/alphacoin_website_2.html#how">HOW IT WORKS</a>
+      <a href="file:///E:/alphacoin_website_2.html#tokenomics">TOKENOMICS</a>
+      <a href="file:///E:/alphacoin_website_2.html#roadmap">ROADMAP</a>
+      <a href="file:///E:/alphacoin_website_2.html#launch">LAUNCH</a>
+    </div>
+    <a href="file:///E:/alphacoin_website_2.html#launch" class="nav-cta">GET $ALC</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-tag fade-up">BASE CHAIN · PROOF-OF-INFERENCE</div>
+        <div class="hero-title fade-up delay-1">
+          <span class="t1">ALPHA</span>
+          <span class="t2">COIN</span>
+        </div>
+        <div class="hero-tagline fade-up delay-2">Where trading bots earn alpha</div>
+        <p class="hero-desc fade-up delay-3">
+          AlphaCoin is the first Proof-of-Inference token built for autonomous trading bots. Instead of wasting energy on meaningless hashes — bots mine $ALC by generating real trading signals.
+        </p>
+        <div class="hero-btns fade-up delay-4">
+          <a href="file:///E:/alphacoin_website_2.html#launch" class="btn-primary">JOIN FAIR LAUNCH</a>
+          <a href="file:///E:/alphacoin_website_2.html#how" class="btn-secondary">LEARN MORE</a>
+        </div>
+      </div>
+
+      <!-- Coin -->
+      <div class="hero-coin-wrap fade-up delay-3">
+        <div class="coin-orbit">
+          <div class="orbit-ring"></div>
+          <div class="orbit-ring-2"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot-green"></div>
+          <div class="coin-svg-wrap">
+            <svg viewBox="0 0 300 300" width="100%" height="100%">
+              <defs>
+                <radialgradient id="cOuter" cx="37%" cy="30%" r="68%">
+                  <stop offset="0%" stop-color="#FFF4B0"></stop>
+                  <stop offset="25%" stop-color="#F2C440"></stop>
+                  <stop offset="60%" stop-color="#B87E18"></stop>
+                  <stop offset="100%" stop-color="#6B4000"></stop>
+                </radialgradient>
+                <radialgradient id="cFace" cx="36%" cy="30%" r="65%">
+                  <stop offset="0%" stop-color="#FFE888"></stop>
+                  <stop offset="40%" stop-color="#CFA018"></stop>
+                  <stop offset="80%" stop-color="#9A7010"></stop>
+                  <stop offset="100%" stop-color="#5E3800"></stop>
+                </radialgradient>
+                <radialgradient id="cHalo" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(240,192,48,0.20)"></stop>
+                  <stop offset="100%" stop-color="rgba(240,192,48,0)"></stop>
+                </radialgradient>
+                <filter id="cGlow" x="-30%" y="-30%" width="160%" height="160%">
+                  <fegaussianblur stdDeviation="8" result="b"></fegaussianblur>
+                  <femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge>
+                </filter>
+                <filter id="bGlow" x="-80%" y="-80%" width="260%" height="260%">
+                  <fegaussianblur stdDeviation="5" result="b"></fegaussianblur>
+                  <femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge>
+                </filter>
+                <clippath id="cc"><circle cx="150" cy="150" r="90"></circle></clippath>
+              </defs>
+              <circle cx="150" cy="150" r="150" fill="rgba(0,0,0,0)"></circle>
+              <circle cx="150" cy="150" r="138" fill="url(#cHalo)"></circle>
+              <circle cx="150" cy="150" r="112" fill="none" stroke="rgba(201,168,76,0.2)" stroke-width="1"></circle>
+              <circle cx="150" cy="152" r="108" fill="url(#cOuter)" filter="url(#cGlow)"></circle>
+              <circle cx="150" cy="152" r="108" fill="none" stroke="rgba(255,245,170,0.35)" stroke-width="2.5"></circle>
+              <circle cx="150" cy="152" r="96" fill="url(#cFace)"></circle>
+              <circle cx="150" cy="152" r="96" fill="none" stroke="rgba(255,220,100,0.15)" stroke-width="1.5"></circle>
+              <ellipse cx="120" cy="110" rx="32" ry="18" fill="rgba(255,255,255,0.11)" transform="rotate(-38,120,110)"></ellipse>
+              <text x="153" y="195" text-anchor="middle" font-family="Georgia,serif" font-size="118" font-weight="900" fill="rgba(0,0,0,0.4)" clip-path="url(#cc)">A</text>
+              <text x="150" y="193" text-anchor="middle" font-family="Georgia,serif" font-size="118" font-weight="900" fill="#150A00" clip-path="url(#cc)">A</text>
+              <g transform="translate(150,137)" filter="url(#bGlow)">
+                <polygon points="9,-28 -5,-4 6,-4 -9,28 5,4 -6,4" fill="rgba(255,230,60,0.3)" transform="scale(1.8)"></polygon>
+              </g>
+              <g transform="translate(150,137)">
+                <polygon points="9,-28 -5,-4 6,-4 -9,28 5,4 -6,4" fill="#FFE060"></polygon>
+                <polygon points="4,-18 -2,-2 3,-2 -4,18 2,2 -3,2" fill="rgba(255,255,255,0.6)"></polygon>
+              </g>
+              <circle cx="150" cy="152" r="108" fill="none" stroke="rgba(240,192,48,0.4)" stroke-width="3" filter="url(#cGlow)"></circle>
+              <rect x="118" y="226" width="64" height="20" rx="10" fill="rgba(8,6,18,0.7)" stroke="rgba(220,185,50,0.3)" stroke-width="1"></rect>
+              <text x="150" y="240" text-anchor="middle" font-family="&#39;Courier New&#39;,monospace" font-weight="700" font-size="9" fill="rgba(245,210,65,0.85)" letter-spacing="4">ALC</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-val">21B</div>
+      <div class="stat-label">Fixed Supply</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val green">0%</div>
+      <div class="stat-label">VC Allocation</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">Base</div>
+      <div class="stat-label">L2 Chain</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val green">Fair</div>
+      <div class="stat-label">Launch Type</div>
+    </div>
+  </div>
+</div>
+
+<div class="gold-divider"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-tag">HOW IT WORKS</div>
+    <h2 class="section-title">Proof-of-<span>Inference</span></h2>
+    <p class="section-sub">Forget useless hashing. AlphaCoin rewards bots that generate real trading value — on-chain, every epoch.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">📡</div>
+        <div class="step-title">Receive Challenge</div>
+        <p class="step-desc">Each epoch, trading bots receive a market analysis challenge — price data, signals, conditions. Real problems, not arbitrary hashes.</p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">⚡</div>
+        <div class="step-title">Generate Alpha</div>
+        <p class="step-desc">Bots analyze the data and submit trading signals or strategies. The quality of inference is scored against real market outcomes.</p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🏆</div>
+        <div class="step-title">Earn $ALC</div>
+        <p class="step-desc">Performance scores are committed on-chain. Top-performing bots earn $ALC proportional to their alpha generation. No cheating possible.</p>
+        <div class="step-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics">
+  <div class="container">
+    <div class="section-tag">TOKENOMICS</div>
+    <h2 class="section-title">$ALC <span>Distribution</span></h2>
+    <p class="section-sub">Fixed supply. Fair distribution. Designed to reward miners, not insiders.</p>
+
+    <div class="tokenomics-grid">
+      <div class="token-info">
+        <div class="token-row">
+          <span class="token-key">TOKEN NAME</span>
+          <span class="token-val">AlphaCoin</span>
+        </div>
+        <div class="token-row">
+          <span class="token-key">TICKER</span>
+          <span class="token-val">$ALC</span>
+        </div>
+        <div class="token-row">
+          <span class="token-key">TOTAL SUPPLY</span>
+          <span class="token-val">21,000,000,000</span>
+        </div>
+        <div class="token-row">
+          <span class="token-key">BLOCKCHAIN</span>
+          <span class="token-val">Base (L2)</span>
+        </div>
+        <div class="token-row">
+          <span class="token-key">LAUNCH TYPE</span>
+          <span class="token-val" style="color:var(--green)">Fair Launch</span>
+        </div>
+        <div class="token-row">
+          <span class="token-key">PRE-SALE</span>
+          <span class="token-val" style="color:var(--green)">None ✓</span>
+        </div>
+        <div class="token-row">
+          <span class="token-key">VC ALLOCATION</span>
+          <span class="token-val" style="color:var(--green)">None ✓</span>
+        </div>
+      </div>
+
+      <div class="alloc">
+        <div class="alloc-item">
+          <div class="alloc-header">
+            <span class="alloc-name">Mining Rewards (PoI)</span>
+            <span class="alloc-pct">60%</span>
+          </div>
+          <div class="alloc-bar"><div class="alloc-fill" style="width: 0%;" data-width="60%"></div></div>
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-header">
+            <span class="alloc-name">Liquidity Pool</span>
+            <span class="alloc-pct">20%</span>
+          </div>
+          <div class="alloc-bar"><div class="alloc-fill" style="width: 0%;" data-width="20%"></div></div>
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-header">
+            <span class="alloc-name">Ecosystem &amp; Grants</span>
+            <span class="alloc-pct">10%</span>
+          </div>
+          <div class="alloc-bar"><div class="alloc-fill green" style="width: 0%;" data-width="10%"></div></div>
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-header">
+            <span class="alloc-name">Team (24mo vest)</span>
+            <span class="alloc-pct">10%</span>
+          </div>
+          <div class="alloc-bar"><div class="alloc-fill" style="width: 0%; opacity: 0.5;" data-width="10%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-tag">ROADMAP</div>
+    <h2 class="section-title">Building the <span>Future</span></h2>
+    <p class="section-sub">From zero to the trading agent economy — one epoch at a time.</p>
+
+    <div class="roadmap">
+      <div class="road-item">
+        <div class="road-dot-wrap"><div class="road-dot done"></div></div>
+        <div>
+          <div class="road-phase">PHASE 1 · Q1 2025</div>
+          <div class="road-title">Foundation</div>
+          <div class="road-items">
+            <span class="road-tag done">Brand Identity</span>
+            <span class="road-tag done">Whitepaper</span>
+            <span class="road-tag done">Smart Contract</span>
+            <span class="road-tag done">X Account</span>
+          </div>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-dot-wrap"><div class="road-dot active"></div></div>
+        <div>
+          <div class="road-phase">PHASE 2 · Q2 2025</div>
+          <div class="road-title">Fair Launch</div>
+          <div class="road-items">
+            <span class="road-tag active">BANKR Launch</span>
+            <span class="road-tag active">DEX Listing</span>
+            <span class="road-tag">Liquidity Pool</span>
+            <span class="road-tag">Community Guild</span>
+          </div>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-dot-wrap"><div class="road-dot"></div></div>
+        <div>
+          <div class="road-phase">PHASE 3 · Q3 2025</div>
+          <div class="road-title">PoI Mining System</div>
+          <div class="road-items">
+            <span class="road-tag">Epoch Rewards</span>
+            <span class="road-tag">Bot API</span>
+            <span class="road-tag">On-chain Scoring</span>
+            <span class="road-tag">Leaderboard</span>
+          </div>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-dot-wrap"><div class="road-dot"></div></div>
+        <div>
+          <div class="road-phase">PHASE 4 · Q4 2025</div>
+          <div class="road-title">Ecosystem Expansion</div>
+          <div class="road-items">
+            <span class="road-tag">Signal Marketplace</span>
+            <span class="road-tag">DeFi Integration</span>
+            <span class="road-tag">CEX Listing</span>
+            <span class="road-tag">DAO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- FAIR LAUNCH -->
+<section id="launch">
+  <div class="container">
+    <div class="launch-box">
+      <div class="launch-title">⚡ FAIR LAUNCH</div>
+      <p class="launch-sub">No VCs. No pre-sale. No insiders. Everyone gets the same chance to participate. $ALC launches on BANKR — the same platform as BOTCOIN.</p>
+      <div class="launch-points">
+        <span class="launch-point">No pre-sale</span>
+        <span class="launch-point">No VC allocation</span>
+        <span class="launch-point">Fixed 21B supply</span>
+        <span class="launch-point">On-chain rewards</span>
+      </div>
+      <a href="https://twitter.com/AlphaCoinBase" target="_blank" class="launch-btn">FOLLOW FOR LAUNCH DATE</a>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- COMMUNITY -->
+<section>
+  <div class="container">
+    <div class="section-tag">COMMUNITY</div>
+    <h2 class="section-title">Join the <span>Trader Guild</span></h2>
+    <p class="section-sub">Connect with trading bot developers, alpha hunters, and early miners.</p>
+
+    <div class="community-grid">
+      <a href="https://twitter.com/AlphaCoinBase" target="_blank" class="comm-card">
+        <div class="comm-icon">𝕏</div>
+        <div>
+          <div class="comm-title">Twitter / X</div>
+          <div class="comm-desc">@AlphaCoinBase · Updates &amp; launch news</div>
+        </div>
+        <div class="comm-arrow">→</div>
+      </a>
+      <a href="file:///E:/alphacoin_website_2.html#" class="comm-card">
+        <div class="comm-icon">💬</div>
+        <div>
+          <div class="comm-title">Telegram</div>
+          <div class="comm-desc">Coming soon · AlphaCoin Trader Guild</div>
+        </div>
+        <div class="comm-arrow">→</div>
+      </a>
+      <a href="file:///E:/alphacoin_website_2.html#" class="comm-card">
+        <div class="comm-icon">📄</div>
+        <div>
+          <div class="comm-title">Whitepaper</div>
+          <div class="comm-desc">Technical docs · Coming soon</div>
+        </div>
+        <div class="comm-arrow">→</div>
+      </a>
+      <a href="file:///E:/alphacoin_website_2.html#" class="comm-card">
+        <div class="comm-icon">🔗</div>
+        <div>
+          <div class="comm-title">Base Chain</div>
+          <div class="comm-desc">docs.base.org · Build on Base</div>
+        </div>
+        <div class="comm-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚡ ALPHACOIN</div>
+  <div class="footer-text">$ALC · BASE CHAIN · PROOF-OF-INFERENCE · © 2025</div>
+</footer>
+
+<script>
+// Particle canvas
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const particles = Array.from({length: 100}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  vx: (Math.random() - 0.5) * 0.18,
+  vy: (Math.random() - 0.5) * 0.18,
+  r: Math.random() * 1.5 + 0.3,
+  a: Math.random() * 0.35 + 0.05,
+  g: Math.random() > 0.88
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 150) {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(201,168,76,${0.025 * (1 - d/150)})`;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.g ? `rgba(0,229,160,${p.a})` : `rgba(201,168,76,${p.a})`;
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// Animate alloc bars on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.width = e.target.dataset.width;
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.alloc-fill').forEach(el => {
+  const w = el.style.width;
+  el.dataset.width = w;
+  el.style.width = '0%';
+  observer.observe(el);
+});
+</script>
+
+
+</body></html>
